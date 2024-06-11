@@ -51,51 +51,75 @@
      Implementar una función de búsqueda de tareas.
      Agregar filtros para mostrar solo tareas vencidas o resueltas
  -->
+    <div class="container">
 
-    <h1>Hello, world!</h1>
-    <form action="get">
-        <input type="text" name="Descripcion tarea" id="task" placeholder="Tarea">
-        <input type="submit" value="Crear tarea" id="submit-task-button">
-    </form>
-    <ul id="tasks-node">
-    </ul>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
+        <h1>Hello, world!</h1>
+        <form action="get" class="d-flex">
+            <input type="text" class="form-control" name="Descripcion tarea" id="task" placeholder="Tarea">
+            <input type="submit" class="btn btn-primary" value="Crear tarea" id="submit-task-button">
+        </form>
+        <ul id="tasks-node">
+        </ul>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+            crossorigin="anonymous"></script>
+    </div>
 </body>
 
 <script>
 
     var tasksNode = document.getElementById("tasks-node");
-    var tasks = ["hacer la tarea", "limpiar casa"]
+    var tasks = []
 
-    // Get new task
+    recoverTasks()
+    renderElements()
+
+    // Create new task
     document.getElementById("submit-task-button").addEventListener("click", function (event) {
         event.preventDefault()
         var inputField = document.getElementById("task")
         var inputValue = inputField.value;
 
+        // Check if user actually wrote something
         if (inputValue.length != 0) {
-            console.log(inputValue.length)
             tasks.push(inputValue)
-            console.log(tasks)
             appendElement(inputValue)
             inputField.value = "";
+            saveArray()
 
         }
     })
 
     // Render tasks
-    // function renderElements() {
-    //     tasks.forEach(element => {
-    //     });
-    // }
+    function renderElements() {
+        tasks.forEach(element => {
+            appendElement(element)
+        });
+    }
 
+    // Put a task inside the tasks list
     function appendElement(text) {
         var newListElement = document.createElement("li")
         newListElement.textContent = text
         tasksNode.appendChild(newListElement)
     }
+
+    // Save all the tasks inside localstorage
+    function saveArray() {
+        const jsonString = JSON.stringify(tasks)
+        localStorage.setItem('tasks', jsonString)
+    }
+
+    // Recover tasks from localstorage
+    function recoverTasks() {
+        const storedValue = localStorage.getItem('tasks')
+
+        if (storedValue) {
+            tasks = JSON.parse(storedValue)
+            console.log(storedValue)
+        }
+    }
+
 
 </script>
 
