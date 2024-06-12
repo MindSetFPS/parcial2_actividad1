@@ -67,7 +67,6 @@
 </body>
 
 <script>
-
     // Create new task
     document.getElementById("submit-task-button").addEventListener("click", function (event) {
         event.preventDefault()
@@ -76,11 +75,7 @@
 
         // Check if user actually wrote something
         if (inputValue.length != 0) {
-            newTask = {
-                content: inputValue,
-                id: tasksList.tasks.length
-            }
-            // tasks.push(newTask)
+            newTask = new Task(inputValue, tasksList.tasks.length)
             tasksList.appendElement(newTask)
             tasksList.addTask(newTask)
             inputField.value = "";
@@ -89,9 +84,46 @@
     })
 
     class Task {
-        constructor(content, id) {
+        constructor(content, id, isDone = false) {
             this.content = content
             this.id = id
+            this.node = document.createElement("li")
+            this.node.textContent = content
+            this.node.id = this.id
+            this.isDone = isDone
+            this.doneButton = this.createDoneButton()
+            this.undoButton = this.createUndoButton()
+        }
+
+        setDone() {
+            this.isDone = !this.isDone
+            this.renderUndoButton()
+        }
+
+        createDoneButton() {
+            var button = document.createElement("button")
+            button.textContent = "Resuelto"
+
+            button.addEventListener("click", () => {
+                this.setDone()
+            })
+
+            return this.node.appendChild(button)
+        }
+
+        createUndoButton() {
+            var undoButton = document.createElement("button")
+
+            undoButton.textContent = "No resuelto"
+            return undoButton
+        }
+
+        renderUndoButton() {
+            if (this.isDone) {
+                this.node.appendChild(this.undoButton)
+            } else {
+                this.node.removeChild(this.undoButton)
+            }
         }
     }
 
@@ -103,21 +135,25 @@
             this.renderElements()
         }
 
-        addTask(task){
+        addTask(task) {
             this.tasks.push(task)
         }
+
         // Render tasks
         renderElements() {
             this.tasks.forEach(element => {
-                this.appendElement(element)
+                console.log(element)
+
+                var taskObject = new Task(element.content, element.id)
+                this.appendElement(taskObject)
             });
         }
 
         // Put a task inside the tasks list
         appendElement(task) {
-            var newListElement = document.createElement("li")
-            newListElement.textContent = task.content
-            this.tasksNode.appendChild(newListElement)
+            // var newListElement = document.createElement("li")
+            // newListElement.textContent = task.content
+            this.tasksNode.appendChild(task.node)
         }
 
         // Save all the tasks inside localstorage
@@ -136,7 +172,7 @@
             }
         }
     }
-    
+
     var tasksList = new TaskList()
 
 </script>
