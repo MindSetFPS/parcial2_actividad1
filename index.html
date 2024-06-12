@@ -93,6 +93,7 @@
             this.isDone = isDone
             this.doneButton = this.createDoneButton()
             this.undoButton = this.createUndoButton()
+            this.deleteButton = this.createDeleteButton()
         }
 
         setDone() {
@@ -116,6 +117,20 @@
 
             undoButton.textContent = "No resuelto"
             return undoButton
+        }
+        
+        createDeleteButton(){
+            var deleteButton = document.createElement("button")
+
+            deleteButton.textContent = "Borrar"
+            
+            deleteButton.addEventListener("click", () => {
+                this.node.remove()
+                tasksList.deleteTask(this.id)
+            })
+
+            return this.node.appendChild(deleteButton)
+            
         }
 
         renderUndoButton() {
@@ -141,18 +156,18 @@
 
         // Render tasks
         renderElements() {
+            this.tasksNode.replaceChildren()
             this.tasks.forEach(element => {
                 console.log(element)
-
-                var taskObject = new Task(element.content, element.id)
+                if(element) {
+                    var taskObject = new Task(element.content, element.id)
+                }
                 this.appendElement(taskObject)
             });
         }
 
         // Put a task inside the tasks list
         appendElement(task) {
-            // var newListElement = document.createElement("li")
-            // newListElement.textContent = task.content
             this.tasksNode.appendChild(task.node)
         }
 
@@ -170,6 +185,13 @@
                 this.tasks = JSON.parse(storedValue)
                 console.log(storedValue)
             }
+        }
+        
+        deleteTask(id){
+            var index = this.tasks.findIndex(element => element.id === id)
+            this.tasks.splice(index, 1)
+            this.saveArray()
+            this.renderElements()
         }
     }
 
