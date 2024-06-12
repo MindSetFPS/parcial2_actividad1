@@ -68,12 +68,6 @@
 
 <script>
 
-    var tasksNode = document.getElementById("tasks-node");
-    var tasks = []
-
-    recoverTasks()
-    renderElements()
-
     // Create new task
     document.getElementById("submit-task-button").addEventListener("click", function (event) {
         event.preventDefault()
@@ -84,46 +78,66 @@
         if (inputValue.length != 0) {
             newTask = {
                 content: inputValue,
-                id: tasks.length
+                id: tasksList.tasks.length
             }
-            tasks.push(newTask)
-            appendElement(newTask)
+            // tasks.push(newTask)
+            tasksList.appendElement(newTask)
+            tasksList.addTask(newTask)
             inputField.value = "";
-            saveArray()
-
+            tasksList.saveArray()
         }
     })
 
-    // Render tasks
-    function renderElements() {
-        tasks.forEach(element => {
-            appendElement(element)
-        });
-    }
-
-    // Put a task inside the tasks list
-    function appendElement(task) {
-        var newListElement = document.createElement("li")
-        newListElement.textContent = task.content
-        tasksNode.appendChild(newListElement)
-    }
-
-    // Save all the tasks inside localstorage
-    function saveArray() {
-        const jsonString = JSON.stringify(tasks)
-        localStorage.setItem('tasks', jsonString)
-    }
-
-    // Recover tasks from localstorage
-    function recoverTasks() {
-        const storedValue = localStorage.getItem('tasks')
-
-        if (storedValue) {
-            tasks = JSON.parse(storedValue)
-            console.log(storedValue)
+    class Task {
+        constructor(content, id) {
+            this.content = content
+            this.id = id
         }
     }
 
+    class TaskList {
+        constructor() {
+            this.tasks = []
+            this.recoverTasks()
+            this.tasksNode = document.getElementById("tasks-node");
+            this.renderElements()
+        }
+
+        addTask(task){
+            this.tasks.push(task)
+        }
+        // Render tasks
+        renderElements() {
+            this.tasks.forEach(element => {
+                this.appendElement(element)
+            });
+        }
+
+        // Put a task inside the tasks list
+        appendElement(task) {
+            var newListElement = document.createElement("li")
+            newListElement.textContent = task.content
+            this.tasksNode.appendChild(newListElement)
+        }
+
+        // Save all the tasks inside localstorage
+        saveArray() {
+            const jsonString = JSON.stringify(this.tasks)
+            localStorage.setItem('tasks', jsonString)
+        }
+
+        // Recover tasks from localstorage
+        recoverTasks() {
+            const storedValue = localStorage.getItem('tasks')
+
+            if (storedValue) {
+                this.tasks = JSON.parse(storedValue)
+                console.log(storedValue)
+            }
+        }
+    }
+    
+    var tasksList = new TaskList()
 
 </script>
 
