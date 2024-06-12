@@ -82,8 +82,12 @@
 
         // Check if user actually wrote something
         if (inputValue.length != 0) {
-            tasks.push(inputValue)
-            appendElement(inputValue)
+            newTask = {
+                content: inputValue,
+                id: tasks.length
+            }
+            tasks.push(newTask)
+            appendElement(newTask)
             inputField.value = "";
             saveArray()
 
@@ -98,9 +102,9 @@
     }
 
     // Put a task inside the tasks list
-    function appendElement(text) {
+    function appendElement(task) {
         var newListElement = document.createElement("li")
-        newListElement.textContent = text
+        newListElement.textContent = task.content
         tasksNode.appendChild(newListElement)
     }
 
