@@ -57,6 +57,7 @@
         <form action="get" class="d-flex">
             <input type="text" class="form-control" name="Descripcion tarea" id="task" placeholder="Tarea">
             <input type="submit" class="btn btn-primary" value="Crear tarea" id="submit-task-button">
+            <input type="date" name="endingDate" id="endingDate">
         </form>
         <ul id="tasks-node">
         </ul>
@@ -72,6 +73,8 @@
         event.preventDefault()
         var inputField = document.getElementById("task")
         var inputValue = inputField.value;
+        
+        var dateTimeField = document.getElementById("")
 
         // Check if user actually wrote something
         if (inputValue.length != 0) {
@@ -82,6 +85,27 @@
             tasksList.saveArray()
         }
     })
+
+    class TaskInput {
+        constructor() {
+            this.createDateInput()
+            this.createDescriptionInput()
+            this.createInputButton()
+        }
+
+        createDescriptionInput(){
+            console.log("here will be the input")
+        }
+
+        createDateInput(){
+            console.log("here date input")
+        }
+        
+        createInputButton(){
+            console.log("input button")
+        }
+        
+    }
 
     class Task {
         constructor(content, id, isDone = false) {
@@ -94,6 +118,7 @@
             this.doneButton = this.createDoneButton()
             this.undoButton = this.createUndoButton()
             this.deleteButton = this.createDeleteButton()
+            // this.inputDate = this.createInputDate()
         }
 
         setDone() {
@@ -132,6 +157,12 @@
             return this.node.appendChild(deleteButton)
             
         }
+        /* 
+        createInputDate() {
+            var inputDate = document.createElement("input")
+            inputDate.type = "date"
+            this.node.appendChild(inputDate)
+        } */
 
         renderUndoButton() {
             if (this.isDone) {
@@ -195,6 +226,7 @@
         }
     }
 
+    var taskInput = new TaskInput()
     var tasksList = new TaskList()
 
 </script>
