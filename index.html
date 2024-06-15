@@ -68,9 +68,14 @@
 <script>
 
     class Task {
-        constructor(content, id, isDone = false) {
+        constructor(taskList, content, isDone = false, ) {
             this.content = content
-            this.id = id
+            this.taskList = taskList
+            console.log('taskList: ', taskList)
+            console.log('content: ', content)
+            console.log('isDone: ', isDone)
+            console.log(this.taskList)
+            this.id = this.content.length
             this.node = document.createElement("li")
             this.node.textContent = content
             this.node.id = this.id
@@ -89,29 +94,25 @@
         createDoneButton() {
             var button = document.createElement("button")
             button.textContent = "Resuelto"
-
             button.addEventListener("click", () => {
                 this.setDone()
             })
-
             return this.node.appendChild(button)
         }
 
         createUndoButton() {
             var undoButton = document.createElement("button")
-
             undoButton.textContent = "No resuelto"
             return undoButton
         }
 
         createDeleteButton() {
             var deleteButton = document.createElement("button")
-
             deleteButton.textContent = "Borrar"
-
             deleteButton.addEventListener("click", () => {
                 this.node.remove()
-                tasksList.deleteTask(this.id)
+                console.log(this.taskList)
+                this.taskList.deleteTask(this.id)
             })
 
             return this.node.appendChild(deleteButton)
@@ -143,9 +144,9 @@
         renderElements() {
             this.tasksNode.replaceChildren()
             this.tasks.forEach(element => {
-                console.log(element)
+                // console.log(element)
                 if (element) {
-                    var taskObject = new Task(element.content, element.id)
+                    var taskObject = new Task(this, element.content, element.isDone)
                 }
                 this.appendElement(taskObject)
             });
@@ -168,7 +169,7 @@
 
             if (storedValue) {
                 this.tasks = JSON.parse(storedValue)
-                console.log(storedValue)
+                // console.log(storedValue)
             }
         }
 
@@ -180,9 +181,10 @@
         }
     }
 
-    class TaskForm{
+    class TaskForm {
         constructor(taskList, appNode) {
             this.taskList = taskList
+            console.log(this.taskList)
             this.appNode = appNode
             this.createDateInput()
             this.createDescriptionInput()
@@ -215,7 +217,7 @@
             submitButton.addEventListener("click", (event) => {
                 event.preventDefault()
                 if (this.textInput.length != 0) {
-                    var newTask = new Task(this.textInput, this.textInput.length, false)
+                    var newTask = new Task(this.taskList, this.textInput, false)
                     this.taskList.appendElement(newTask)
                     this.taskList.addTask(newTask)
                     this.taskList.value = ""
@@ -263,6 +265,7 @@
         constructor() {
             this.appNode = document.getElementById("app")
             this.taskList = new TaskList()
+            console.log(this.taskList)
             this.taskForm = new TaskForm(this.taskList, this.appNode)
             // this.createInputForm()
         }
