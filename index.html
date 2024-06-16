@@ -64,10 +64,6 @@
         constructor(taskList, content, isDone = false,) {
             this.content = content
             this.taskList = taskList
-            console.log('taskList: ', taskList)
-            console.log('content: ', content)
-            console.log('isDone: ', isDone)
-            console.log(this.taskList)
             this.id = this.content.length
             this.node = document.createElement("li")
             this.node.textContent = content
@@ -120,10 +116,19 @@
     }
 
     class TaskList {
-        constructor() {
+        constructor(appNode) {
             this.tasks = []
             this.recoverTasks()
-            this.tasksNode = document.getElementById("tasks-node");
+            this.appNode = appNode
+            // this.tasksNode = document.getElementById("tasks-node");
+            this.tasksNode = null;
+            // this.renderElements()
+        }
+        
+        createTaskListNode() {
+            var taskListNode = document.createElement("ul")
+            this.tasksNode = taskListNode
+            this.appNode.appendChild(this.tasksNode)
             this.renderElements()
         }
 
@@ -149,7 +154,6 @@
 
         // Save all the tasks inside localstorage
         saveArray() {
-            console.log(this.tasks)
             const jsonString = JSON.stringify(this.tasks, this.replacer)
             localStorage.setItem('tasks', jsonString)
         }
@@ -157,7 +161,6 @@
         // Recover tasks from localstorage
         recoverTasks() {
             const storedValue = localStorage.getItem('tasks')
-
             if (storedValue) {
                 this.tasks = JSON.parse(storedValue)
             }
@@ -176,11 +179,9 @@
             if (removedProperties.includes(key)) {
                 return undefined;
             } else {
-                console.log(key)
                 return value
             }
         }
-
     }
 
     class TaskForm {
@@ -196,7 +197,6 @@
         }
 
         creteTextInput() {
-
         }
 
         createForm() {
@@ -260,9 +260,9 @@
     class App {
         constructor() {
             this.appNode = document.getElementById("app")
-            this.taskList = new TaskList()
-            console.log(this.taskList)
+            this.taskList = new TaskList(this.appNode)
             this.taskForm = new TaskForm(this.taskList, this.appNode)
+            this.taskList.createTaskListNode()
         }
 
         createInputForm() {
