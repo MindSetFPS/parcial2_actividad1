@@ -52,13 +52,7 @@
      Agregar filtros para mostrar solo tareas vencidas o resueltas
  -->
     <div class="container" id="app">
-        <h1>Hello, world!</h1>
-        <!-- <form action="get" class="d-flex">
-            <input type="text" class="form-control" name="Descripcion tarea" id="task" placeholder="Tarea">
-            <input type="submit" class="btn btn-primary" value="Crear tarea" id="submit-task-button">
-        </form> -->
-        <ul id="tasks-node">
-        </ul>
+        <ul id="tasks-node"></ul>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
@@ -66,9 +60,8 @@
 </body>
 
 <script>
-
     class Task {
-        constructor(taskList, content, isDone = false, ) {
+        constructor(taskList, content, isDone = false,) {
             this.content = content
             this.taskList = taskList
             console.log('taskList: ', taskList)
@@ -114,9 +107,7 @@
                 console.log(this.taskList)
                 this.taskList.deleteTask(this.id)
             })
-
             return this.node.appendChild(deleteButton)
-
         }
 
         renderUndoButton() {
@@ -144,7 +135,6 @@
         renderElements() {
             this.tasksNode.replaceChildren()
             this.tasks.forEach(element => {
-                // console.log(element)
                 if (element) {
                     var taskObject = new Task(this, element.content, element.isDone)
                 }
@@ -159,7 +149,8 @@
 
         // Save all the tasks inside localstorage
         saveArray() {
-            const jsonString = JSON.stringify(this.tasks)
+            console.log(this.tasks)
+            const jsonString = JSON.stringify(this.tasks, this.replacer)
             localStorage.setItem('tasks', jsonString)
         }
 
@@ -169,7 +160,6 @@
 
             if (storedValue) {
                 this.tasks = JSON.parse(storedValue)
-                // console.log(storedValue)
             }
         }
 
@@ -179,6 +169,18 @@
             this.saveArray()
             this.renderElements()
         }
+
+        replacer(key, value) {
+            // Filtering out properties
+            var removedProperties = ["deleteButton", "doneButton", "node", "taskList", "undoButton"]
+            if (removedProperties.includes(key)) {
+                return undefined;
+            } else {
+                console.log(key)
+                return value
+            }
+        }
+
     }
 
     class TaskForm {
@@ -191,6 +193,10 @@
             this.createInputButton()
             this.textInput = ""
             this.createForm()
+        }
+
+        creteTextInput() {
+
         }
 
         createForm() {
@@ -207,41 +213,31 @@
                 type: "text"
             })
 
+            textInput.addEventListener('input', (event) => {
+                this.textInput = event.target.value
+            })
+
             form.appendChild(textInput)
 
-            var submitButton = document.createElement("button")
+            var submitButton = document.createElement("input")
             Object.assign(submitButton, {
-                textContent: "soy un boton"
+                textContent: "soy un boton",
+                type: "submit"
+
             })
 
             submitButton.addEventListener("click", (event) => {
                 event.preventDefault()
-                if (this.textInput.length != 0) {
+                console.log(textInput.value)
+                if (textInput.value.length != 0) {
                     var newTask = new Task(this.taskList, this.textInput, false)
                     this.taskList.appendElement(newTask)
                     this.taskList.addTask(newTask)
-                    this.taskList.value = ""
+                    textInput.value = ""
+                    this.textInput = ""
                     this.taskList.saveArray()
                 }
             })
-
-            // Create new task
-            /* document.getElementById("submit-task-button").addEventListener("click", function (event) {
-                event.preventDefault()
-                var inputField = document.getElementById("task")
-                var inputValue = inputField.value;
-        
-                var dateTimeField = document.getElementById("")
-        
-                // Check if user actually wrote something
-                if (inputValue.length != 0) {
-                    newTask = new Task(inputValue, tasksList.tasks.length)
-                    tasksList.appendElement(newTask)
-                    tasksList.addTask(newTask)
-                    inputField.value = "";
-                    tasksList.saveArray()
-                }
-            }) */
 
             form.appendChild(submitButton)
             this.appNode.appendChild(form)
@@ -267,7 +263,6 @@
             this.taskList = new TaskList()
             console.log(this.taskList)
             this.taskForm = new TaskForm(this.taskList, this.appNode)
-            // this.createInputForm()
         }
 
         createInputForm() {
