@@ -61,7 +61,7 @@
 
 <script>
     class Task {
-        constructor(taskList, content, isDone = false, createdAt = new Date (), finishDate) {
+        constructor(taskList, content, isDone = false, createdAt = new Date(), finishDate) {
             this.content = content
             this.taskList = taskList
             this.id = this.content.length
@@ -72,14 +72,13 @@
             this.doneButton = this.createDoneButton()
             this.undoButton = this.createUndoButton()
             this.deleteButton = this.createDeleteButton()
-            this.createdAt = createdAt 
+            this.createdAt = createdAt
             this.finishDate = finishDate
             this.createDate()
         }
 
         setDone() {
             this.isDone = !this.isDone
-            this.renderUndoButton()
         }
 
         createDoneButton() {
@@ -87,6 +86,14 @@
             button.textContent = "Resuelto"
             button.addEventListener("click", () => {
                 this.setDone()
+                console.log(button)
+                if (this.isDone) {
+                    this.node.removeChild(button)
+                    this.node.appendChild(this.undoButton)
+                } else {
+                    this.node.appendChild(button)
+                }
+                // this.node.remove(button)
             })
             return this.node.appendChild(button)
         }
@@ -94,6 +101,18 @@
         createUndoButton() {
             var undoButton = document.createElement("button")
             undoButton.textContent = "No resuelto"
+
+            undoButton.addEventListener("click", () => {
+                if (this.isDone) {
+                    console.log("click")
+                    this.deleteButton.insertAdjacentElement('beforebegin', this.doneButton)
+                    this.node.removeChild(this.undoButton)
+                } else {
+                    this.setDone()
+                }
+                this.setDone()
+
+            })
             return undoButton
         }
 
@@ -108,19 +127,11 @@
             return this.node.appendChild(deleteButton)
         }
 
-        createDate () {
+        createDate() {
             var dateElement = document.createElement("p")
-            dateElement.textContent = this.createdAt.toDateString() 
+            dateElement.textContent = this.createdAt.toDateString()
             this.node.appendChild(dateElement)
 
-        }
-
-        renderUndoButton() {
-            if (this.isDone) {
-                this.node.appendChild(this.undoButton)
-            } else {
-                this.node.removeChild(this.undoButton)
-            }
         }
     }
 
@@ -133,7 +144,7 @@
             this.tasksNode = null;
             // this.renderElements()
         }
-        
+
         createTaskListNode() {
             var taskListNode = document.createElement("ul")
             this.tasksNode = taskListNode
@@ -226,13 +237,13 @@
             })
 
             form.appendChild(textInput)
-            
+
             var dateInput = document.createElement("input")
             Object.assign(dateInput, {
-               id: "date-input",
-               type: "date" 
+                id: "date-input",
+                type: "date"
             })
-            
+
             form.appendChild(dateInput)
 
             var submitButton = document.createElement("input")
