@@ -61,7 +61,7 @@
 
 <script>
     class Task {
-        constructor(taskList, content, isDone = false,) {
+        constructor(taskList, content, isDone = false, createdAt = new Date (), finishDate) {
             this.content = content
             this.taskList = taskList
             this.id = this.content.length
@@ -72,7 +72,9 @@
             this.doneButton = this.createDoneButton()
             this.undoButton = this.createUndoButton()
             this.deleteButton = this.createDeleteButton()
-            // this.inputDate = this.createInputDate()
+            this.createdAt = createdAt 
+            this.finishDate = finishDate
+            this.createDate()
         }
 
         setDone() {
@@ -104,6 +106,13 @@
                 this.taskList.deleteTask(this.id)
             })
             return this.node.appendChild(deleteButton)
+        }
+
+        createDate () {
+            var dateElement = document.createElement("p")
+            dateElement.textContent = this.createdAt.toDateString() 
+            this.node.appendChild(dateElement)
+
         }
 
         renderUndoButton() {
@@ -201,7 +210,6 @@
 
         createForm() {
             var form = document.createElement("form")
-
             Object.assign(form, {
                 class: "d-flex"
             })
@@ -218,6 +226,14 @@
             })
 
             form.appendChild(textInput)
+            
+            var dateInput = document.createElement("input")
+            Object.assign(dateInput, {
+               id: "date-input",
+               type: "date" 
+            })
+            
+            form.appendChild(dateInput)
 
             var submitButton = document.createElement("input")
             Object.assign(submitButton, {
@@ -230,12 +246,14 @@
                 event.preventDefault()
                 console.log(textInput.value)
                 if (textInput.value.length != 0) {
-                    var newTask = new Task(this.taskList, this.textInput, false)
+                    console.log(dateInput.value)
+                    var newTask = new Task(this.taskList, this.textInput, false, new Date(), dateInput.value)
                     this.taskList.appendElement(newTask)
                     this.taskList.addTask(newTask)
                     textInput.value = ""
                     this.textInput = ""
                     this.taskList.saveArray()
+                    console.log(this.taskList)
                 }
             })
 
